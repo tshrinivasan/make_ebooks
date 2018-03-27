@@ -7,6 +7,7 @@ This gives the ebooks in 4 formats. A4 PDF, 6 inch PDF, epub and mobi
 
 Fill the following details in the file config.yaml
 
+```
 book_title : 
 book_title_in_english : 
 author : 
@@ -18,11 +19,12 @@ ebook_maker :
 ebook_maker_email : 
 license :  
 content : content.md
-
+```
 
 
 example :
 
+```
 book_title : தசாவதாரம்
 book_title_in_english : dasavatharam
 author : அறிஞர் அண்ணா
@@ -34,7 +36,7 @@ ebook_maker : த. சீனிவாசன்
 ebook_maker_email : tshrinivasan@gmail.com
 license : Public Domain - CC0 
 content : content.md
-
+```
 
 
 always keep the book content as markdown format in the name called content.md
