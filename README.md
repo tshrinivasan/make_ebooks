@@ -39,6 +39,7 @@ content : content.md
 
 always keep the book content as markdown format in the name called content.md
 
+Keep the cover image in the same parent folder.
 
 
 # Installation
@@ -51,6 +52,12 @@ run the below commands
 ```
 sudo apt-get install python3 python3-pip pandoc texlive-base texlive-xetex calibre texlive-lang-indic texlive-latex-recommended 
 ```
+
+
+Note that this will download nearly 1 GB of data.
+Make sure that you have enough bandwidth on your internet connection.
+
+
 
 
 open the "fonts" directory.
