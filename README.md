@@ -68,11 +68,25 @@ Click every font.
 Install all the fonts.
 
 
+
+# Configure internet Archive Credentials
+
+
+run the below command
+```
+ia configure
+```
+
+it will ask for your internet archive (archive.org) username and password.
+Give the detais.
+
+
+
 # How to Execute?
 
 In the file content.md, make sure each chapters have # as first charector.
 
-The, run 
+Then, run 
 
 ```
 python3 make-ebook.py
@@ -80,6 +94,17 @@ python3 make-ebook.py
 
 
 This will make the ebooks and store in a new folder as "ebookname"-upload
+
+
+
+# Upload to Internet Archive
+
+run the below command
+```
+python3 ia_upload.py
+```
+
+This will upload the ebooks to archive.org site
 
 
 
