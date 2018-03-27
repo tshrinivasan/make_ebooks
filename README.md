@@ -51,6 +51,7 @@ run the below commands
 
 ```
 sudo apt-get install python3 python3-pip pandoc texlive-base texlive-xetex calibre texlive-lang-indic texlive-latex-recommended 
+sudp pip3 install internetarchive
 ```
 
 
