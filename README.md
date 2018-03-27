@@ -81,4 +81,6 @@ This will make the ebooks and store in a new folder as "ebookname"-upload
 
 
 
+# Thanks
 
+Thanks to Lenin Gurusamy (guruleninn@gmail.com)  for his extensive research on pandoc, latex and for developing scripts for this project.
