@@ -33,7 +33,7 @@ ebook_maker = book_info['ebook_maker']
 ebook_maker_email = book_info['ebook_maker_email']
 license = book_info['license']
 
-print(book_title)
+print(book_title_in_english)
 
 
 
