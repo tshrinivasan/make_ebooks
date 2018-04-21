@@ -46,6 +46,7 @@ license = book_info['license']
 print(book_title_in_english)
 
 
+
 style = open("mytitlesec.sty","w")
 style_text = r"""
 % +--------------------------------------------------+
@@ -1467,9 +1468,14 @@ forpdf.write(forpdf_text)
 forpdf.close()
 
 
+#removing empty space before sentences
+os.system("sed -i 's/^[ \t]*//' content.md")
+
 # Read in the file
 with open('content.md', 'r') as file :
   filedata = file.read()
+  
+  
 
 # Replace the target string
 filedata = re.sub(r"\*\*([^\*]*)\*\*", r"\\textcolor{blue}{\1}", filedata)
