@@ -1,6 +1,6 @@
 import yaml
 import os
-
+import re
 import sys
 
 
@@ -1445,7 +1445,7 @@ forpdf_text = r"""
 \newfontfamily\chapterheading{TAU_Elango_Kalyani}
 \newfontfamily\bq{Vijaya}
 \newfontfamily\mani{TAU_Elango_Manimekalai}
-
+\newfontfamily\boldtext{Uni Ila.Sundaram-06}
 
 
 \renewcommand{\contentsname}{பொருளடக்கம்}
@@ -1467,10 +1467,21 @@ forpdf.write(forpdf_text)
 forpdf.close()
 
 
+# Read in the file
+with open('content.md', 'r') as file :
+  filedata = file.read()
+
+# Replace the target string
+filedata = re.sub(r"\*\*([^\*]*)\*\*", r"\\textcolor{blue}{\1}", filedata)
+
+# Write the file out again
+with open('content-pdf.md', 'w') as file:
+  file.write(filedata)
+
 
 
 a4_pan = open('a4_pan.sh','w')
-a4_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:vmargin=2.5cm" -V "geometry:hmargin=2.5cm" -V mainfont="Vijaya" -V fontsize="12pt" -V linestretch="1.5" -N -o ' + book_title_in_english +'.pdf a4_cover.md title.md toc.md content.md   \n'
+a4_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:vmargin=2.5cm" -V "geometry:hmargin=2.5cm" -V mainfont="Vijaya" -V fontsize="12pt" -V linestretch="1.5" -N -o ' + book_title_in_english +'.pdf a4_cover.md title.md toc.md content-pdf.md   \n'
 a4_pan.write(a4_pan_content)
 a4_pan.close()
 
@@ -1579,7 +1590,7 @@ print("Done")
 #sys.exit()
 
 six_inch_pan = open('6_inch_pan.sh','w')
-six_inch_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:paperwidth=4in" -V "geometry:paperheight=5in" -V "geometry:tmargin=0.5cm" -V "geometry:bmargin=1.5cm" -V "geometry:lmargin=0.5cm" -V "geometry:rmargin=0.5cm" -V mainfont="Vijaya" -V fontsize="10pt" -V linestretch="1.5" -N -o ' + book_title_in_english + '_6_inch.pdf cover6.md title.md toc.md content.md    \n'
+six_inch_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:paperwidth=4in" -V "geometry:paperheight=5in" -V "geometry:tmargin=0.5cm" -V "geometry:bmargin=1.5cm" -V "geometry:lmargin=0.5cm" -V "geometry:rmargin=0.5cm" -V mainfont="Vijaya" -V fontsize="10pt" -V linestretch="1.5" -N -o ' + book_title_in_english + '_6_inch.pdf cover6.md title.md toc.md content-pdf.md    \n'
 six_inch_pan.write(six_inch_pan_content)
 six_inch_pan.close()
 
