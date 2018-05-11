@@ -10,4 +10,5 @@ artist_email :
 ebook_maker : 
 ebook_maker_email : 
 license : 
-content : 
+content : content.md
+category : 
