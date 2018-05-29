@@ -26,10 +26,27 @@ import re
 import yaml
 import sys
 import time
+import uuid
+import shutil
+import json
+import argparse
+import requests
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-l','--local-file', help='Use Local File', required=False)
+parser.add_argument('-r','--remote-book-url', help='Use Remote File', required=False)
+parser.add_argument('-i','--interactive', help='Interactive Mode', required=False)
+parser.add_argument('-bn','--book_number', help='Book Number', required=True)
 
 
-book_url = sys.argv[1]
-book_number = sys.argv[2]
+args = parser.parse_args()
+
+local_file = args.local_file
+remote_book_url = args.remote_book_url
+interactive = args.interactive
+book_number = args.book_number
+
 
 home = os.getenv("HOME")
 
@@ -38,61 +55,97 @@ fte_yaml = yaml.load(open(home + '/.config/fte-login.yaml'))
 fte_username = fte_yaml['username']
 fte_password = fte_yaml['password']
 
-
-print("Getting Book Info")
-book_info = yaml.load(urlopen(book_url.replace('details','download') + '/book-info.yaml'))
-
-
-book_title = book_info['book_title']
-print(book_title)
-
-book_title_in_english = book_info['book_title_in_english'].replace(" ","-")
-author = book_info['author']
-print(author)
-category  = book_info['category']
-print(category)
-if book_info['author_mail']:
-    author_mail = book_info['author_mail']
-else:
-    author_mail = " "
-
-cover_image = book_info['cover_image']
+git_username = fte_yaml['git_username']
+git_password = fte_yaml['git_password']
 
 
-if book_info['artist']:
-    artist = book_info['artist']
-else:
-    artist = ""
-
-if book_info['artist_email']:
-    artist_email = book_info['artist_email']
-else:
-    artist_email = ""
-
-if book_info['translator']:
-    translator = book_info['translator']
-else:
-    translator = ""
-
-if book_info['translator_email']:
-    translator_email = book_info['translator_email']
-else:
-    translator_email = ""
+android_push_Authorization = fte_yaml['android_push_Authorization']
 
 
 
-ebook_maker = book_info['ebook_maker']
-ebook_maker_email = book_info['ebook_maker_email']
-license = book_info['license']
+if remote_book_url:
+    book_url = remote_book_url
+
+
+    print("Getting Book Info")
+    book_info = yaml.load(urlopen(book_url.replace('details','download') + '/book-info.yaml'))
+
+
+    book_title = book_info['book_title']
+    print(book_title)
+
+    book_title_in_english = book_info['book_title_in_english'].replace(" ","-")
+    author = book_info['author']
+    print(author)
+    category  = book_info['category']
+    print(category)
+    if book_info['author_mail']:
+        author_mail = book_info['author_mail']
+    else:
+        author_mail = " "
+
+    cover_image = book_info['cover_image']
+
+
+    if book_info['artist']:
+        artist = book_info['artist']
+    else:
+        artist = ""
+
+    if book_info['artist_email']:
+        artist_email = book_info['artist_email']
+    else:
+        artist_email = ""
+
+    if book_info['translator']:
+        translator = book_info['translator']
+    else:
+        translator = ""
+
+    if book_info['translator_email']:
+        translator_email = book_info['translator_email']
+    else:
+        translator_email = ""
+
+
+
+    ebook_maker = book_info['ebook_maker']
+    ebook_maker_email = book_info['ebook_maker_email']
+    license = book_info['license']
 
 
 
 
-epub_url = book_url.replace('details','download') + "/" +  book_title_in_english + ".epub"
-mobi_url = book_url.replace('details','download') + "/" +  book_title_in_english + ".mobi"
-a4_pdf_url  = book_url.replace('details','download') + "/" +  book_title_in_english + ".pdf"
-six_inch_pdf_url = book_url.replace('details','download') + "/" +  book_title_in_english + "-6-inch.pdf"
-cover_url = book_url.replace('details','download') + "/" +  cover_image
+    epub_url = book_url.replace('details','download') + "/" +  book_title_in_english + ".epub"
+    mobi_url = book_url.replace('details','download') + "/" +  book_title_in_english + ".mobi"
+    a4_pdf_url  = book_url.replace('details','download') + "/" +  book_title_in_english + ".pdf"
+    six_inch_pdf_url = book_url.replace('details','download') + "/" +  book_title_in_english + "-6-inch.pdf"
+    cover_url = book_url.replace('details','download') + "/" +  cover_image
+
+
+if interactive == "yes":
+
+    book_title = input("Book Title : ").strip()
+    book_title_in_english = input("Book Title in English : ").strip()
+    book_url = input("Book Archive URL : ").strip()
+    author = input("Author : ").strip()
+    author_mail = input("Author Mail : ").strip()
+    artist = input("Artist : ").strip()
+    artist_email = input("Artist Email : ").strip()
+    translator = input("Translator : ").strip()
+    translator_email = input("Translator Email : ").strip()
+    ebook_maker = input("Ebook made by : ").strip()
+    ebook_maker_email = input("Ebook Maker email : ").strip()
+    license = input("License : ").strip()
+    category = input("category : ").strip()
+
+    cover_url = input("Cover Image URL : ").strip()
+    epub_url = input("Epub URL : ").strip()
+    mobi_url = input("Mobi URL : ").strip()
+    a4_pdf_url  = input("A4 PDF URL : ").strip()
+    six_inch_pdf_url = input("Six inch PDF URL : ")
+    
+    cover_image = book_title_in_english + "_cover.jpg"
 
 
 
@@ -203,35 +256,43 @@ response = wp.call(media.UploadFile(data))
 print(response)
 
 image_url = response["url"]
+
 attachment_id = response['id']
 
 print("Uploaded cover Image")
 
+medium_image_width = str(response["metadata"]["sizes"]["medium"]["width"])
+medium_image_height = str(response["metadata"]["sizes"]["medium"]["height"])
 
-content = "நூல் : " +  book_title + "\n\n" + "ஆசிரியர் : " + author + "\n\n" + "மின்னஞ்சல் : " + author_mail + "\n" +  "<a href=" + image_url + "><img class='alignright size-medium wp-image-6958' src=" + image_url + "  width='300' height='300' /></a>" + "\n" 
+medium_image_url = image_url.replace('.jpg','-' + str(medium_image_width) +'x' + str(medium_image_height) + '.jpg')
+
+content = "நூல் : " +  book_title + "\n\n" + "ஆசிரியர் : " + author + "\n\n" +    "<a href=" + image_url + "><img class='alignright size-medium wp-image-6958' src=" + medium_image_url + "  width='" + medium_image_width + "' height='" + medium_image_height +"' /></a>" + "\n" 
 
 
 print("Generating Content to Post")
 
-
-if book_info['artist']:
-    content = content + "அட்டைப்படம் : " + artist + "\n"
-
-if book_info['artist_email']:
-    content = content + artist_email + "\n"
+if author_mail :
+    content = content + "மின்னஞ்சல் : " + author_mail + "\n\n"
 
 
-if book_info['translator']:
-    content =  content + "தமிழாக்கம் : " + book_info['translator'] + "\n"
+if artist:
+    content = content + "அட்டைப்படம் : " + artist + "\n\n"
 
-if book_info['translator_email']:
-    content = content + book_info['translator_email'] + "\n"
+if artist_email:
+    content = content + artist_email + "\n\n"
+
+
+if translator:
+    content =  content + "தமிழாக்கம் : " + book_info['translator'] + "\n\n"
+
+if translator_email:
+    content = content + book_info['translator_email'] + "\n\n"
     
 content = content + "மின்னூலாக்கம் : " + ebook_maker + "\n"
-content = content + "மின்னஞ்சல் : " + ebook_maker_email + "\n"
+content = content + "மின்னஞ்சல் : " + ebook_maker_email + "\n\n"
 
-content = content + "வெளியிடு : FreeTamilEbooks.com" + "\n"
-content = content + "உரிமை : " + license + "\n" + "உரிமை – கிரியேட்டிவ் காமன்ஸ். எல்லாரும் படிக்கலாம், பகிரலாம்." + "\n"
+content = content + "வெளியிடு : FreeTamilEbooks.com" + "\n\n"
+content = content + "உரிமை : " + license + "\n\n" + "உரிமை – கிரியேட்டிவ் காமன்ஸ். எல்லாரும் படிக்கலாம், பகிரலாம்." + "\n"
 
 
 
@@ -295,13 +356,105 @@ post.content = content
 post.thumbnail = attachment_id
 
 post.post_status = 'publish'
+#post.post_status = 'draft'
 
 
-post.terms_names = {
-  'genres': [category],
-  'contributors': [artist, ebook_maker],
-  'authors' : [author]
-}
+if artist:
+    post.terms_names = {
+    'genres': [category],
+    'contributors': [artist, ebook_maker],
+    'authors' : [author]
+    }
+    
+else:
+    post.terms_names = {
+    'genres': [category],
+    'contributors': [ebook_maker],
+    'authors' : [author]
+    }
+    
+
 wp.call(NewPost(post))
 
 print("Published")
+
+
+
+book_name = book_title
+bookid = str(uuid.uuid4())
+cover_image = image_url
+gen = category
+epub_link = epub_data[1]
+authors = author
+url =   "http://freetamilebooks.com/ebooks/" + book_title_in_english
+
+
+xml_content = "\n\n" + "<book>" +"\n" + "<bookid>" + bookid + "</bookid>" + "\n" + "<title>" + book_name + "</title>" + "\n"
+xml_content = xml_content + "<author>" + authors + "</author>" + "\n"
+xml_content = xml_content + "<image>" + cover_image + "</image>" + "\n"
+xml_content = xml_content + "<link>" + url + "</link>" + "\n"
+xml_content = xml_content + "<epub>" + epub_link + "</epub>" + "\n"
+xml_content = xml_content + "<pdf />" + "\n"
+xml_content = xml_content + "<category>" + gen + "</category>" + "\n"
+xml_content = xml_content + "<date />" + "\n" + "</book>" + "\n"
+
+#print(xml_content)
+
+print("Adding into booksdb.xml\n")
+
+git_clone = "git clone https://" + git_username +":" + git_password + "@github.com/kishorek/Free-Tamil-Ebooks fte_repo"
+os.system(git_clone)
+
+temp = open('temp', 'w')
+with open('fte_repo/booksdb.xml','r') as f:
+    for line in f:
+        if line.startswith('<books>'):
+            line = line + xml_content
+        temp.write(line)
+temp.close()
+shutil.move('temp', 'fte_repo/booksdb.xml')
+
+os.chdir('fte_repo')
+git_add = "git add booksdb.xml"
+os.system(git_add)
+
+
+git_commit = "git commit -m 'added a book'"
+os.system(git_commit)
+
+git_push = "git push origin master"
+os.system(git_push)
+
+os.chdir('../')
+os.system("rm -rf fte_repo")
+
+
+
+print("Sending Push Notification to Android Devices")
+
+title = "புது மின்னூல் - " + book_title
+text = "FreeTamilEbooks ன் புதிய மின்னூல் வெளியிடப்பட்டுள்ளது. " + book_title  + " " + author + ".  இன்றே படியுங்கள். "
+
+
+
+headers = {'Authorization': android_push_Authorization}
+headers = json.dumps(headers,ensure_ascii=False)
+header_json = json.loads(headers)
+
+
+data = {'notification':{'title': title, 'text': text }, 'data' : { 'keyname': 'shrini' },'to' : '/topics/fte_books'}
+data = json.dumps(data,ensure_ascii=False)
+data_json = json.loads(data)
+
+
+
+api = "https://fcm.googleapis.com/fcm/send"
+
+r = requests.post(api, json=data_json, headers=header_json)
+
+#print(r.json())
+
+print("Done")
+
+
+
