@@ -283,10 +283,10 @@ if artist_email:
 
 
 if translator:
-    content =  content + "தமிழாக்கம் : " + book_info['translator'] + "\n\n"
+    content =  content + "தமிழாக்கம் : " + translator + "\n\n"
 
 if translator_email:
-    content = content + book_info['translator_email'] + "\n\n"
+    content = content + translator_email + "\n\n"
     
 content = content + "மின்னூலாக்கம் : " + ebook_maker + "\n"
 content = content + "மின்னஞ்சல் : " + ebook_maker_email + "\n\n"
