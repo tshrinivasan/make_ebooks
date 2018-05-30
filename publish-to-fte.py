@@ -354,6 +354,7 @@ post.post_type = 'ebooks'
 post.content = content
 
 post.thumbnail = attachment_id
+post.comment_status = 'open'
 
 post.post_status = 'publish'
 #post.post_status = 'draft'
