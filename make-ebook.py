@@ -1418,15 +1418,28 @@ forpdf_text = r"""
 \usepackage{tocloft}
 \usepackage{graphicx}
 \usepackage{underscore}
+\usepackage{indentfirst}
 \sloppy
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{rightheader}
+\lhead{leftheader}
+\rfoot{kaniyam.com}
+\lfoot{freetamilebooks.com}
+\cfoot{\thepage}
 
 \usepackage[labelformat=empty]{caption}
 
+\definecolor{mygray}{gray}{0}
+
+\setmainfont[AutoFakeBold=4.0,AutoFakeSlant=0.4]{Vijaya}
+
 \newcommand{\sectionbreak}{\clearpage}
 
-\setlength{\parindent}{2em}
+\newcommand{\subsectionbreak}{\clearpage}
 
-\definecolor{lava}{rgb}{0.81, 0.06, 0.13}
+\setlength{\parindent}{2em}
 
 \makeatletter
 \renewcommand\numberline[1]{\hb@xt@\@tempdima{#1. \hfil}}
@@ -1447,6 +1460,14 @@ forpdf_text = r"""
 \newfontfamily\bq{Vijaya}
 \newfontfamily\mani{TAU_Elango_Manimekalai}
 \newfontfamily\boldtext{Uni Ila.Sundaram-06}
+
+\newlength\mystoreparindent
+\newenvironment{myparindent}[1]{%
+\setlength{\mystoreparindent}{\the\parindent}
+\setlength{\parindent}{#1}
+}{%
+\setlength{\parindent}{\mystoreparindent}
+}
 
 
 \renewcommand{\contentsname}{பொருளடக்கம்}
@@ -1478,7 +1499,7 @@ with open('content.md', 'r') as file :
   
 
 # Replace the target string
-filedata = re.sub(r"\*\*([^\*]*)\*\*", r"\\textcolor{blue}{\1}", filedata)
+# filedata = re.sub(r"\*\*([^\*]*)\*\*", r"\\textcolor{blue}{\1}", filedata)
 
 # Write the file out again
 with open('content-pdf.md', 'w') as file:
@@ -1691,7 +1712,7 @@ epub_front.close()
 
 
 epub_pan = open('epub_pan.sh','w')
-epub_pan_text = "pandoc -f markdown -t epub --epub-cover-image=" + cover_image +"  -o " + book_title_in_english+ ".epub --smart --toc epub_title.txt epub_front.md content.md "
+epub_pan_text = "pandoc +RTS -K1000000 -RTS -f markdown -t epub --css=/home/sun/fte/pandoc/epub_prose.css --epub-cover-image=" + cover_image +"  -o " + book_title_in_english+ ".epub --smart --toc epub_title.txt epub_front.md content_epub.md "
 epub_pan.write(epub_pan_text)
 epub_pan.close()
 
@@ -1718,6 +1739,5 @@ os.system("rm -rf " + book_title_in_english + "-tex")
 os.mkdir(book_title_in_english + "-tex")
 os.system("mv  *.sh *.txt *.sty *.tex " +  book_title_in_english + "-tex")
 os.system("Moved temp files to tex directory")
-
 
 
