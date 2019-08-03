@@ -43,11 +43,11 @@ sed '/^-br/s/$/**<\/div>/' content-epub2.md > content-epub3.md
 sed '/^-br/s//<div style="text-align: right">**/' content-epub3.md > content-epub4.md
 sed '/~/!b;:l;n;/~~/b;/~~/b;s/$/<\/span>/;bl;' content-epub4.md > content-epuba.md
 sed '/~/!b;:l;n;/~~/b;/~~/b;s/^/%%/;bl;' content-epuba.md > content-epubaa.md
-sed '/+/!b;:l;n;/++/b;/++/b;s/$/<\/span>/;bl;' content-epubaa.md > content-epubx.md
-sed 's/-b/xb/g' content-epubx.md > content-epuby.md
-sed '/+/!b;:l;n;/++/b;/~~/b;s/^/<span class="mw-poem-indented" style="display: inline-block; margin-left: 3em;">/;bl;' content-epuby.md > content-epubab.md
+# sed '/+/!b;:l;n;/++/b;/++/b;s/$/<\/span>/;bl;' content-epubaa.md > content-epubx.md
+sed 's/-b/xb/g' content-epubaa.md > content-epuby.md
+# sed '/+/!b;:l;n;/++/b;/~~/b;s/^/<span class="mw-poem-indented" style="display: inline-block; margin-left: 3em;">/;bl;' content-epuby.md > content-epubab.md
 # find '-b' and replace '++b' (-b already in epub code block)
-sed 's/%%==/<span class="mw-poem-indented" style="display: inline-block; margin-left: 5em;">/g' content-epubab.md > content-epubb.md
+sed 's/%%==/<span class="mw-poem-indented" style="display: inline-block; margin-left: 5em;">/g' content-epuby.md > content-epubb.md
 # find '==' and add '</span>' at end of the line
 sed 's/%%/<span class="mw-poem-indented" style="display: inline-block; margin-left: 3em;">/g' content-epubb.md > content-epub3.md
 # find '==' and replace '<span class="mw-poem-indented" style="display: inline-block; margin-left: 3em;">'
@@ -55,7 +55,7 @@ sed 's/~~/<\/div>/g' content-epub3.md > content-epub4.md
 sed 's/++/<\/div>/g' content-epub4.md > content-epub4a.md
 # find '~~' and replace '</div>' 
 sed 's/~/<div class="poem">/g' content-epub4a.md > content-epub5.md
-sed 's/+/<div class="poem">/g' content-epub5.md > content-epub5a.md
+sed 's/+/<div style="margin-left: 3em;">/g' content-epub5.md > content-epub5a.md
 # find '~' and replace '<div class="poem">' 
 sed '/^xb/s/$/**/' content-epub5a.md > content-epub6.md
 # find '++b' and add '**' end of the line for bold
