@@ -2,9 +2,9 @@
 sed '/~/!b;:l;n;/~~/b;n;/~~/b;s/^/==/;bl;' content.md > content-epub.md
 sed '/~/!b;:l;n;/~~/b;n;/~~/b;s/^/==/;bl;' content.md > content-pdf.md
 # find and add '==' to beginiing of all even lines between '~' and '~~' block
-sed '/~/!b;:l;n;/~~/b;/~~/b;s/$/\\par/;bl;' content-pdf.md > content-pdfa.md
-sed '/~/!b;:l;n;/~~/b;/~~/b;s/^/1111/;bl;' content-pdfa.md > content-pdf1.md
-sed '/+/!b;:l;n;/++/b;/++/b;s/^/2222/;bl;' content-pdfa.md > content-pdf1.md
+sed '/~/!b;:l;n;/~~/b;/~~/b;s/^/1111/;bl;' content-pdf.md > content-pdfa.md
+sed '/~/!b;:l;n;/~~/b;/~~/b;s/$/\\par/;bl;' content-pdfa.md > content-pdfb.md
+sed '/+/!b;:l;n;/++/b;/++/b;s/^/2222/;bl;' content-pdfb.md > content-pdf1.md
 sed 's/~~/\\end{spacing}\\end{myparindent}/' content-pdf1.md > content-pdf1a.md
 sed '/+/!b;:l;n;/++/b;/++/b;s/$/\\par/;bl;' content-pdf1a.md > content-pdf1b.md
 sed 's/++/\\end{spacing}\\end{myparindent}/' content-pdf1b.md > content-pdf2.md
@@ -29,8 +29,8 @@ sed 's/==/\\hspace*{1cm}/' content-pdf7.md > content-pdf8.md
 # find '==' and replace '\hspace*{1cm}' for peom's even line indent
 sed 's/~/\\begin{myparindent}{3cm}\\begin{spacing}{1.0}/' content-pdf8.md > content-pdf8a.md
 sed 's/+/\\begin{myparindent}{3cm}\\begin{spacing}{1.0}/' content-pdf8a.md > content-pdf9.md
-sed 's/1111\\par//' content-pdf9.md > content-pdf10.md
-sed 's/^................}\\par/\\vspace*{1.5cm}/' content-pdf10.md > content-pdf11.md
+sed 's/\\hspace\*{1cm}\\par/\\vspace*{1.5cm}/' content-pdf9.md > content-pdf10.md
+sed 's/1111\\par//' content-pdf10.md > content-pdf11.md
 sed 's/2222\\par/\\vspace*{0.75cm}/' content-pdf11.md > content-pdf12.md
 # find '~' and replace '\noindent' pdf ('+' noindented poems only)
 sed 's/1111//' content-pdf12.md > content-pdf13.md
@@ -73,8 +73,9 @@ sed 's/@@//g' content-epub11.md > content-epub12.md
 sed 's/+//g' content-epub12.md > content-epub13.md
 sed 's/++//g' content-epub13.md > content-epub14.md
 sed 's/<span class="mw-poem-indented" style="display: inline-block; margin-left: 3em;"><\/span>//g' content-epub14.md > content-epub15.md
+sed 's/<span class="mw-poem-indented" style="display: inline-block; margin-left: 5em;"><\/span>//g' content-epub15.md > content-epub16.md
 # find '+' and replace with nothing
-sed 's/$/  /' content-epub15.md > content_epub.md
+sed 's/$/  /' content-epub16.md > content_epub.md
 # adding double space at end of the line (for force new line)
 rm content-pdf*.md content-epub*.md 
 ## remove all files except content_pdf.md and content_epub.md
