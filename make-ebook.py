@@ -4,6 +4,7 @@ import re
 import sys
 
 
+
 book_info = yaml.load(open('book-info.yaml'))
 
 book_title = book_info['book_title']
@@ -1413,7 +1414,6 @@ forpdf_text = r"""
 
 \usepackage{mytitlesec}
 \usepackage{fontspec}
-\usepackage{xcolor}
 \usepackage{setspace}
 \usepackage{tocloft}
 \usepackage{graphicx}
@@ -1423,15 +1423,22 @@ forpdf_text = r"""
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{rightheader}
-\lhead{leftheader}
-\rfoot{kaniyam.com}
-\lfoot{freetamilebooks.com}
+\rhead{காந்தியைக் கண்டுணர்தல்}
+\lhead{ஆர்.பட்டாபிராமன்}
 \cfoot{\thepage}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+            colorlinks=true,
+            linkcolor=purple,
+            citecolor=red,
+            urlcolor=red,
+            breaklinks=true}
 
 \usepackage[labelformat=empty]{caption}
 
-\definecolor{mygray}{gray}{0}
+% \definecolor{mygray}{gray}{0}
 
 \setmainfont[AutoFakeBold=4.0,AutoFakeSlant=0.4]{Vijaya}
 
@@ -1490,10 +1497,10 @@ forpdf.close()
 
 
 #removing empty space before sentences
-os.system("sed -i 's/^[ \t]*//' content.md")
+os.system("sed -i 's/^[ \t]*//' content_pdf.md")
 
 # Read in the file
-with open('content.md', 'r') as file :
+with open('content_pdf.md', 'r') as file :
   filedata = file.read()
   
   
@@ -1508,7 +1515,7 @@ with open('content-pdf.md', 'w') as file:
 
 
 a4_pan = open('a4_pan.sh','w')
-a4_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:vmargin=2.5cm" -V "geometry:hmargin=2.5cm" -V mainfont="Vijaya" -V fontsize="12pt" -V linestretch="1.5" -N -o ' + book_title_in_english +'.pdf a4_cover.md title.md toc.md content-pdf.md   \n'
+a4_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:vmargin=2.5cm" -V "geometry:hmargin=2.5cm" -V mainfont="Vijaya" -V fontsize="12pt" -V linestretch="1.5" -N -o ' + book_title_in_english +'_a4.pdf a4_cover.md title.md front.md contributions.md toc.md content-pdf.md fte-pdf.md   \n'
 a4_pan.write(a4_pan_content)
 a4_pan.close()
 
@@ -1553,7 +1560,7 @@ title_text = r"""\restoregeometry
 
         \vspace{0.5cm}
 
-       {\LARGE\mytitle{""" + book_title + r"""}}
+       {\Huge\mytitle{""" + book_title + r"""}}
 
        \vspace{0.5cm}
 
@@ -1561,47 +1568,31 @@ title_text = r"""\restoregeometry
        \vspace{0.5cm}
 
        {\LARGE\chapterheading{""" + author_mail + r"""}}
-        \vspace{0.5cm}""" 
+
+        """ 
         
-if translator:
-    title_text = title_text + r"""{\LARGE\chapterheading{தமிழாக்கம் - """ + translator + r"""}}
-    \vspace{0.5cm}
-    {\LARGE\chapterheading{""" + translator_email + r"""}}
-    \vspace{0.5cm} """
+# if translator:
+#    title_text = title_text + r"""{\LARGE\chapterheading{தமிழாக்கம் - """ + translator + r"""}}
+#    \vspace{0.5cm}
+#    {\LARGE\chapterheading{""" + translator_email + r"""}}
+#    \vspace{0.5cm} """
 
 
-title_text = title_text + r"""\LARGE\textbf{மின்னூல் வெளியீடு : FreeTamilEbooks.com}
-
-        \vspace{1.0cm}
-
-        \Large\mani{உரிமை - """ + license + r""" கிரியேட்டிவ் காமன்ஸ். எல்லாரும் படிக்கலாம், பகிரலாம்.}
-
-        \vspace{1.0cm}
-
-        \Large\mani{பதிவிறக்கம் செய்ய - http://FreeTamilEbooks.com/ebooks/""" + book_title_in_english + r"""}
-
-        \vspace{1.0cm}
-  
-        \Large\mani{மின்னூலாக்கம் - """ + ebook_maker + """ - """ + ebook_maker_email+ r"""}
-
-        \vfill
-
-        \vspace{1.0cm}
-
-        \Large\mani{ This Book was produced using LaTeX + Pandoc}
-
+title_text = title_text + r""" 
+        
 
 
      \end{center}
     \thispagestyle{empty}
-\newpage
-\thispagestyle{empty}
+
 \mbox{}
 
 """
 
 title.write(title_text)
 title.close()
+
+
 
 
 
@@ -1617,7 +1608,7 @@ print("Done")
 #sys.exit()
 
 six_inch_pan = open('6_inch_pan.sh','w')
-six_inch_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:paperwidth=4in" -V "geometry:paperheight=5in" -V "geometry:tmargin=0.5cm" -V "geometry:bmargin=1.5cm" -V "geometry:lmargin=0.5cm" -V "geometry:rmargin=0.5cm" -V mainfont="Vijaya" -V fontsize="10pt" -V linestretch="1.5" -N -o ' + book_title_in_english + '_6_inch.pdf cover6.md title.md toc.md content-pdf.md    \n'
+six_inch_pan_content = '#!/bin/bash \npandoc --latex-engine=xelatex -H forpdf.tex -V classoption=book -V "geometry:paperwidth=4in" -V "geometry:paperheight=5in" -V "geometry:tmargin=0.5cm" -V "geometry:bmargin=1.5cm" -V "geometry:lmargin=0.5cm" -V "geometry:rmargin=0.5cm" -V mainfont="Vijaya" -V fontsize="10pt" -V linestretch="1.5" -N -o ' + book_title_in_english + '_6_inch.pdf cover6.md title.md front.md contributions.md toc.md content-pdf.md fte-pdf.md   \n'
 six_inch_pan.write(six_inch_pan_content)
 six_inch_pan.close()
 
@@ -1672,35 +1663,20 @@ epub_front_text = r"""
 """ +author_mail 
 
 
-if translator:
-    epub_front_text = epub_front_text + r"""தமிழாக்கம் - """ + translator + r"""
-    &nbsp; """ +  translator_email + r"""&nbsp; """
+# if translator:
+#    epub_front_text = epub_front_text + translator + r"""
+#    &nbsp; """ +  translator_email + r"""&nbsp; """
 
 
 epub_front_text = epub_front_text + r"""
 
 &nbsp;
 
-மின்னூல் வெளியீடு : FreeTamilEbooks.com
-
-&nbsp;
-
-உரிமை :   """ +license + """
-கிரியேட்டிவ் காமன்ஸ். எல்லாரும் படிக்கலாம், பகிரலாம்.
-
-&nbsp;
-
-
-மின்னூலாக்கம் - """ + ebook_maker + """ - """ + ebook_maker_email + """
-
+பதிவிறக்கம் செய்ய - http://FreeTamilEbooks.com/ebooks/""" + book_title_in_english + """}
 
 &nbsp;
 
 This book was produced using [pandoc](pandoc.org)
-
-&nbsp;
-
-பதிவிறக்கம் செய்ய - http://FreeTamilEbooks.com/ebooks/""" + book_title_in_english + """}
 
 """
 
@@ -1709,12 +1685,14 @@ epub_front.close()
 
 
 
-
-
 epub_pan = open('epub_pan.sh','w')
-epub_pan_text = "pandoc +RTS -K1000000 -RTS -f markdown -t epub --css=/home/sun/fte/pandoc/epub_prose.css --epub-cover-image=" + cover_image +"  -o " + book_title_in_english+ ".epub --smart --toc epub_title.txt epub_front.md content_epub.md "
+epub_pan_text = "pandoc +RTS -K1000000 -RTS -f markdown -t epub3 --css=/home/sun/fte/pandoc/epub_prose.css --epub-cover-image=" + cover_image +"  -o " + book_title_in_english+ ".epub --smart --toc epub_title.txt epub_front.md contributions.md front.md content_epub.md fte-epub.md "
 epub_pan.write(epub_pan_text)
 epub_pan.close()
+
+
+
+
 
 
 
@@ -1727,11 +1705,31 @@ print("Making mobi")
 os.system("ebook-convert " + book_title_in_english+".epub " + book_title_in_english+".mobi")
 print("Done")
 
+html_pan = open('html_pan.sh','w')
+html_pan_text = "pandoc " "-o " + book_title_in_english+ ".html " + book_title_in_english+ ".epub "
+html_pan.write(html_pan_text)
+html_pan.close()
+
+
+print("Making HTML")
+os.system("/bin/bash html_pan.sh")
+print("Done")
+
+
+text_pan = open('text_pan.sh','w')
+text_pan_text = "pandoc " + book_title_in_english+ ".epub " "-t plain --wrap=none -o" + book_title_in_english+ ".txt " 
+text_pan.write(text_pan_text)
+text_pan.close()
+
+print("Making TEXT")
+os.system("/bin/bash text_pan.sh")
+print("Done")
 
 
 os.system("rm -rf " + book_title_in_english + "-upload")
 os.mkdir(book_title_in_english + "-upload")
-os.system("mv *.pdf *.epub *.mobi *.jpg *.png *.md " + book_title_in_english + "-upload")
+os.system("mv *.pdf *.epub *.mobi *.jpg *.html *.txt *.png *.md " + book_title_in_english + "-upload")
+os.system("cp *.yaml " + book_title_in_english + "-upload")
 os.system("Moved files to upload directory")
 
 
