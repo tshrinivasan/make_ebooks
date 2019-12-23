@@ -67,6 +67,10 @@ open the "fonts" directory.
 Click every font.
 Install all the fonts.
 
+# Custom Markdown
+
+Check the file custom-markdown.txt for the instuctions used to tag with custom markdown tags.
+
 
 
 # Configure internet Archive Credentials
